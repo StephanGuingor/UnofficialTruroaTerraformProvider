@@ -20,20 +20,36 @@ var (
 	ErrAPIServerNotProvided = fmt.Errorf("API server not provided")
 )
 
+// CustomFinalMessage constains the fields for a custom final message
+type CustomFinalMessage struct {
+	CustomMessageID string `json:"custom_message_id,omitempty"`
+	Message         string `json:"message,omitempty"`
+	Status          string `json:"status,omitempty"`
+}
+
+type Messages struct {
+	FailureMessage           string                `json:"failure_message,omitempty"`
+	PendingMessage           string                `json:"pending_message,omitempty"`
+	SuccessMessage           string                `json:"success_message,omitempty"`
+	ExitMessage              string                `json:"exit_message,omitempty"`
+	WaitingForResultsMessage string                `json:"waiting_for_results_message,omitempty"`
+	CustomMessages           []*CustomFinalMessage `json:"custom_messages,omitempty"`
+}
+
 type IdentityFlowConfig struct {
 	// RedirectUrls               *ConfigURL                  `json:"redirect_urls,omitempty"`
-	// Messages                   *Messages                   `json:"messages,omitempty"`
-	// ContinueFlowInNewDevice    bool                        `json:"continue_flow_in_new_device,omitempty"`
-	EnableDesktopFlow bool `json:"enable_desktop_flow,omitempty"`
-	// EnablePostponedWebProcess  bool                        `json:"enable_postponed_web_process,omitempty"`
-	// IgnoreInitialMessage       bool                        `json:"ignore_initial_message,omitempty"`
+	Messages                  *Messages `json:"messages,omitempty"`
+	ContinueFlowInNewDevice   bool      `json:"continue_flow_in_new_device,omitempty"`
+	EnableDesktopFlow         bool      `json:"enable_desktop_flow,omitempty"`
+	EnablePostponedWebProcess bool      `json:"enable_postponed_web_process,omitempty"`
+	IgnoreInitialMessage      bool      `json:"ignore_initial_message,omitempty"`
 	// TimeToLive                 int64                       `json:"time_to_live,omitempty"`
-	Lang string `json:"lang,omitempty"`
-	// EnableFollowUp             bool                        `json:"enable_follow_up,omitempty"`
-	// FollowUpDelay              int64                       `json:"follow_up_delay,omitempty"`
-	// FollowUpMessage            string                      `json:"follow_up_message,omitempty"`
-	// StartBusinessHours         time.Time                   `json:"start_business_hours,omitempty"`
-	// EndBusinessHours           time.Time                   `json:"end_business_hours,omitempty"`
+	Lang               string     `json:"lang,omitempty"`
+	EnableFollowUp     bool       `json:"enable_follow_up,omitempty"`
+	FollowUpDelay      int64      `json:"follow_up_delay,omitempty"`
+	FollowUpMessage    string     `json:"follow_up_message,omitempty"`
+	StartBusinessHours *time.Time `json:"start_business_hours,omitempty"`
+	EndBusinessHours   *time.Time `json:"end_business_hours,omitempty"`
 }
 
 type ResponseOption struct {
@@ -229,10 +245,15 @@ func (c *TruoraClient) CreateFlow(ctx context.Context, flow *IdentityProcessFlow
 	return &flowResponse, nil
 }
 
-func (c *TruoraClient) UpdateFlow(flowID string, flow *IdentityProcessFlow) (*IdentityProcessFlowResponse, error) {
+func (c *TruoraClient) UpdateFlow(ctx context.Context, flowID string, flow *IdentityProcessFlow) (*IdentityProcessFlowResponse, error) {
 	client := c.HTTPClient
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v1/flows/%s", c.APIServer, flowID), nil)
+	marshalledFlow, err := json.Marshal(flow)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v1/flows/%s", c.APIServer, flowID), bytes.NewBuffer(marshalledFlow))
 	if err != nil {
 		return nil, err
 	}

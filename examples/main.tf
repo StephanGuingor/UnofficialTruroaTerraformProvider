@@ -2,7 +2,7 @@ terraform {
   required_providers {
     truora = {
       version = "0.2"
-      source  = "truora.com/edu/truora"
+      source  = "truora.com/local/truora"
     }
   }
 }

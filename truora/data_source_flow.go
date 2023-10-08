@@ -242,13 +242,6 @@ func mapVerification(verification *truora.IdentityVerification) map[string]inter
 	mapVerification["verification_id"] = verification.VerificationID
 	mapVerification["name"] = verification.Name
 
-	if verification.Config != nil {
-		// mapConfig := make(map[string]interface{})
-		// mapConfig["lang"] = verification.Config.R
-
-		// mapVerification["config"] = mapConfig
-	}
-
 	if verification.Steps != nil {
 		mapSteps := make([]interface{}, len(verification.Steps))
 

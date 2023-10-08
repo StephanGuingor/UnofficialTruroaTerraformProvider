@@ -1,5 +1,5 @@
-resource "truora_flow" "new_automated_flow" {
-    name = "welpsjj :D"
+data "truora_flow_document" "new_automated_flow_document" {
+    name = "Epic new flow :D"
     type = "permanent"
     
     config {
@@ -16,12 +16,13 @@ resource "truora_flow" "new_automated_flow" {
     }
 }
 
+resource "truora_flow" "new_automated_flow_inline" {
+    document = data.truora_flow_document.new_automated_flow_document.json
+}
+
 output "new_automated_flow" {
     value = {
-        flow_id = truora_flow.new_automated_flow.flow_id
-        name = truora_flow.new_automated_flow.name
-        type = truora_flow.new_automated_flow.type
-        lang = truora_flow.new_automated_flow.config[0].lang
+        flow_id = truora_flow.new_automated_flow_inline.flow_id
+        name = truora_flow.new_automated_flow_inline.name
     }
-  
 }
