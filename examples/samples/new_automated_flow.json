@@ -1,0 +1,9 @@
+{
+    "name": "Terraform file flow updated",
+    "type": "permanent",
+    "identity_verifications": [
+        {
+            "name": "email_verification"
+        }
+    ]
+}

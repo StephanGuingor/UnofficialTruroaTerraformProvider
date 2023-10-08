@@ -16,6 +16,6 @@ output "onboarding_flow" {
     flow_id = data.truora_flow.onboarding_flow.flow_id
     name = data.truora_flow.onboarding_flow.name
     type = data.truora_flow.onboarding_flow.type
-    lang = data.truora_flow.onboarding_flow.config.lang
+    lang = data.truora_flow.onboarding_flow.config[0].lang
   }
 }
