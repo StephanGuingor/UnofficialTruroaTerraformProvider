@@ -1,4 +1,4 @@
-# Terraform Provider Hashicups
+# Terraform Provider Truora Unofficial
 
 Run the following command to build the provider
 
